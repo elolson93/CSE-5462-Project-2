@@ -25,6 +25,9 @@ int main(int argc, char* argv[]) {
   PointToPointHelper pointToPoint;
   pointToPoint.SetDeviceAttribute ("DataRate", StringValue ("1Mbps"));
   pointToPoint.SetChannelAttribute ("Delay", StringValue ("10ms"));
+ 
+  //Enable PCAP files
+  pointTopoint.EnablePcapAll ("proj2");
 
   //Install the connection between nodes. Save the network devices for later use.
   NetDeviceContainer devicesAB, devicesBC, devicesCD;
@@ -33,10 +36,8 @@ int main(int argc, char* argv[]) {
   devicesCD = pointToPoint.Install (nodes.Get (2), nodes.Get (3));
  
   //Create the bit error rates for the node connections
-  //10^-6
   Ptr<RateErrorModel> em = CreateObject<RateErrorModel> ();
   em->SetAttribute ("ErrorRate", DoubleValue (0.000001));
-  //10^-5
   Ptr<RateErrorModel> emBC = CreateObject<RateErrorModel> ();
   emBC->SetAttribute ("ErrorRate", DoubleValue (0.00001));
 
@@ -66,19 +67,39 @@ int main(int argc, char* argv[]) {
   sinkApps.Start (Seconds (1.0));
   sinkApps.Stop (Seconds (120.0));
   
+  /* Below are the two options I had in mind for our tcp client. I don't think the first one will work */
+   
+  /* OPTION ONE */
   //Set up our TCP sender application in node A
-  BulkSendHelper source ("ns3::TcpSocketFactory", InetSocketAddress (interfaces.GetAddress (1), port));
-  //This attribute value may not work
-  source.SetAttribute ("MaxBytes", StringValue ("1MB"));
-  ApplicationContainer sourceApps = source.Install (nodes.Get (0));
-  sourceApps.Start (Seconds (2.0));
-  sourceApps.Stop (Seconds (120.0));
+  //We need to access some of the trace sink values in bulk sender helper's socket field. Is it Possible?
+  //BulkSendHelper source ("ns3::TcpSocketFactory", InetSocketAddress (interfaces.GetAddress (1), port));
+  //source.SetAttribute ("MaxBytes", StringValue ("1MB"));
+  //ApplicationContainer sourceApps = source.Install (nodes.Get (0));
+  //sourceApps.Start (Seconds (2.0));
+  //sourceApps.Stop (Seconds (120.0));
+
+  /* OPTION TWO */
+  //Requires we make a custom MyApp application like in tcpchain.cc
+  Address sinkAddress = (InetSocketAddress (interfaces.GetAddress (1), port));
+  Ptr<Socket> ns3TcpSocket = Socket::CreateSocket (nodes.Get (0), TcpSocketFactory:GetTypeId ());
+  //Ptr<MyApp> app CreateObject<MyApp> ();  
+  //Custom application setup just like in tcpchain.cc e.g. app->Setup (...);
+  //nodes.Get (0)->AddApplication (app);
+  //app->SetStartTime ();
+  //app->SetStopTime ();
+
+  //Any Ascii or Pcap helpers go here
+  
+  //Hook the trace sources to our trace sinks
+  //ns3TcpSocket->TraceConnectWithoutContext ("CongestionWindow", ...);
+  //ns3TcpSocket->TraceConnectWithoutContext ("SlowStartThreshold", ...);
+  //ns3TcpSocket->TraceConnectWithoutContext (Seq. Num.);
  
   //Set up inter-network routing
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
   //Run the simulator
-  Simulator::Stop (Seconds (120.0));
+  Simulator::Stop (Seconds (20.0));
   Simulator::Run ();
   Simulator::Destroy ();
  
