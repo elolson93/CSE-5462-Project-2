@@ -22,8 +22,12 @@
 // I too am a bad programmer who likes to make use of global lists
 std::list<uint32_t> seqNums;
 
+using namespace ns3;
+
+NS_LOG_COMPONENT_DEFINE("TcpBulkSend Rerouting Example");
+
 static void 
-RecvdChange (Ptr<OutputStreamWrapper> stream, uint32_t oldRecv, uint32_t newRecv)
+RecvdChange (Ptr<OutputStreamWrapper> stream, ns3::SequenceNumber< uint32_t, int32_t > oldRecv, ns3::SequenceNumber< uint32_t, int32_t > newRecv)
 {
 	// add new seq num to list
   	seqNums.push_front(oldRecv.GetValue());
@@ -46,12 +50,8 @@ TraceRecvd ()
   	// Trace the received pakets in node D
   	AsciiTraceHelper ascii;
   	Ptr<OutputStreamWrapper> stream = ascii.CreateFileStream ("proj2-part1.dat");
-  	Config::ConnectWithoutContext ("/NodeList/0/$ns3::TcpL4Protocol/SocketList/0/Rx", MakeBoundCallback (&RecvdChange,stream));
+  	Config::ConnectWithoutContext ("/NodeList/0/$ns3::TcpL4Protocol/SocketList/0/HighestRxSequence", MakeBoundCallback (&RecvdChange,stream));
 }
-
-using namespace ns3;
-
-NS_LOG_COMPONENT_DEFINE("TcpBulkSend Rerouting Example");
 
 int
 main(int argc, char *argv[])
@@ -176,6 +176,7 @@ main(int argc, char *argv[])
 	pointToPoint.EnableAsciiAll (stream);
 	pointToPoint.EnablePcapAll ("proj2-part3", false);
   	internet.EnableAsciiIpv4All (stream);
+	Simulator::Schedule(Seconds(0.00001),&TraceRecvd);
   
   	// Trace routing tables 
   	Ipv4GlobalRoutingHelper g;
