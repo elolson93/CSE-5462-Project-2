@@ -49,7 +49,7 @@ TraceRecvd ()
 {
   	// Trace the received pakets in node D
   	AsciiTraceHelper ascii;
-  	Ptr<OutputStreamWrapper> stream = ascii.CreateFileStream ("proj2-part1.dat");
+  	Ptr<OutputStreamWrapper> stream = ascii.CreateFileStream ("proj2-part3.dat");
   	Config::ConnectWithoutContext ("/NodeList/0/$ns3::TcpL4Protocol/SocketList/0/HighestRxSequence", MakeBoundCallback (&RecvdChange,stream));
 }
 
@@ -180,8 +180,10 @@ main(int argc, char *argv[])
   
   	// Trace routing tables 
   	Ipv4GlobalRoutingHelper g;
-  	Ptr<OutputStreamWrapper> routingStream = Create<OutputStreamWrapper> ("proj2-part3.routes", std::ios::out);
-  	g.PrintRoutingTableAllAt (Seconds (10), routingStream);
+  	Ptr<OutputStreamWrapper> routingStream1 = Create<OutputStreamWrapper> ("proj2-part3-1.routes", std::ios::out);
+	Ptr<OutputStreamWrapper> routingStream2 = Create<OutputStreamWrapper> ("proj2-part3-2.routes", std::ios::out);
+        g.PrintRoutingTableAllAt (Seconds (1), routingStream1);
+	g.PrintRoutingTableAllAt (Seconds (10), routingStream2);
  	
 	//
 	// Now, do the actual simulation.
