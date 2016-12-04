@@ -33,10 +33,10 @@ RecvdChange (Ptr<OutputStreamWrapper> stream, uint32_t oldRecv, uint32_t newRecv
   
   	if (found) {
 		// if retransmitted, print seq number in third column so gnuplot will print it a different color
-		*stream->GetStream () << Simulator::Now ().GetSeconds () /*<< " " << oldSeq*/ << " " << newSeq << " " << newSeq << std::endl;
+		*stream->GetStream () << Simulator::Now ().GetSeconds () /*<< " " << oldSeq*/ << " " << newRecv << " " << newRecv << std::endl;
   	} else {
 		// if not retransmitted print NaN in third column so gnuplot will ignore it
-  		*stream->GetStream () << Simulator::Now ().GetSeconds () /*<< " " << oldSeq*/ << " " << newSeq << " NaN" << std::endl;
+  		*stream->GetStream () << Simulator::Now ().GetSeconds () /*<< " " << oldSeq*/ << " " << newRecv << " NaN" << std::endl;
   	}
 }
 
