@@ -18,8 +18,36 @@
 #include "ns3/traced-value.h"
 #include "ns3/trace-source-accessor.h"
 
+
 // I too am a bad programmer who likes to make use of global lists
 std::list<uint32_t> seqNums;
+
+static void 
+RecvdChange (Ptr<OutputStreamWrapper> stream, uint32_t oldRecv, uint32_t newRecv)
+{
+	// add new seq num to list
+  	seqNums.push_front(oldRecv.GetValue());
+  
+  	// returns true if new seq num is in list (i.e. sequence number has been retransmitted
+  	bool found = (std::find(seqNums.begin(), seqNums.end(), newRecv.GetValue()) != seqNums.end());
+  
+  	if (found) {
+		// if retransmitted, print seq number in third column so gnuplot will print it a different color
+		*stream->GetStream () << Simulator::Now ().GetSeconds () /*<< " " << oldSeq*/ << " " << newSeq << " " << newSeq << std::endl;
+  	} else {
+		// if not retransmitted print NaN in third column so gnuplot will ignore it
+  		*stream->GetStream () << Simulator::Now ().GetSeconds () /*<< " " << oldSeq*/ << " " << newSeq << " NaN" << std::endl;
+  	}
+}
+
+static void
+TraceRecvd ()
+{
+  	// Trace the received pakets in node D
+  	AsciiTraceHelper ascii;
+  	Ptr<OutputStreamWrapper> stream = ascii.CreateFileStream ("proj2-part1.dat");
+  	Config::ConnectWithoutContext ("/NodeList/0/$ns3::TcpL4Protocol/SocketList/0/Rx", MakeBoundCallback (&RecvdChange,stream));
+}
 
 using namespace ns3;
 
@@ -34,9 +62,9 @@ main(int argc, char *argv[])
 	// Ensure we are using TCPNewReno
 	Config::SetDefault("ns3::TcpL4Protocol::SocketType", StringValue("ns3::TcpNewReno"));
   
-  // The below value configures the default behavior of global routing.
-  // By default, it is disabled.  To respond to interface events, set to true
-  Config::SetDefault ("ns3::Ipv4GlobalRouting::RespondToInterfaceEvents", BooleanValue (true));
+  	// The below value configures the default behavior of global routing.
+  	// By default, it is disabled.  To respond to interface events, set to true
+  	Config::SetDefault ("ns3::Ipv4GlobalRouting::RespondToInterfaceEvents", BooleanValue (true));
 
 	//
 	// Explicitly create the nodes required by the topology.
@@ -48,19 +76,19 @@ main(int argc, char *argv[])
 	//
 	// Explicitly create the point-to-point link required by the topology.
 	//
-  NS_LOG_INFO("Create channels.");
+  	NS_LOG_INFO("Create channels.");
 	PointToPointHelper pointToPoint;
 	pointToPoint.SetDeviceAttribute("DataRate", StringValue("1Mbps"));
 	pointToPoint.SetChannelAttribute("Delay", StringValue("10ms"));
 
-  NetDeviceContainer devicesAB, devicesBC, devicesCD, devicesAE, devicesEF, devicesFG, devicesGD;
+  	NetDeviceContainer devicesAB, devicesBC, devicesCD, devicesAE, devicesEF, devicesFG, devicesGD;
  	devicesAB = pointToPoint.Install(nodes.Get(0), nodes.Get(1));
-  devicesBC = pointToPoint.Install (nodes.Get(1), nodes.Get(2));
-  devicesCD = pointToPoint.Install (nodes.Get(2), nodes.Get (3));
-  devicesAE = pointToPoint.Install (nodes.Get (0), nodes.Get (4));
-  devicesEF = pointToPoint.Install (nodes.Get (4), nodes.Get(5));
-  devicesFG = pointToPoint.Install (nodes.Get (5), nodes.Get (6));
-  devicesGD = pointToPoint.Install (nodes.Get (6), nodes.Get (3));
+  	devicesBC = pointToPoint.Install (nodes.Get(1), nodes.Get(2));
+  	devicesCD = pointToPoint.Install (nodes.Get(2), nodes.Get (3));
+  	devicesAE = pointToPoint.Install (nodes.Get (0), nodes.Get (4));
+  	devicesEF = pointToPoint.Install (nodes.Get (4), nodes.Get(5));
+  	devicesFG = pointToPoint.Install (nodes.Get (5), nodes.Get (6));
+  	devicesGD = pointToPoint.Install (nodes.Get (6), nodes.Get (3));
 
 	Ptr<RateErrorModel> emABCD = CreateObject<RateErrorModel> ();
 	emABCD->SetAttribute ("ErrorRate", DoubleValue (0.000001));
@@ -71,15 +99,15 @@ main(int argc, char *argv[])
 	devicesAB.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (emABCD));
 	devicesBC.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (emBC));	
 	devicesCD.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (emABCD));  
-  devicesAE.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (emABCD));
-  devicesEF.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (emABCD));
-  devicesFG.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (emABCD));
-  devicesGD.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (emABCD));
+  	devicesAE.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (emABCD));
+  	devicesEF.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (emABCD));
+  	devicesFG.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (emABCD));
+  	devicesGD.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (emABCD));
 
 	//
 	// Install the internet stack on the nodes
 	//
-  NS_LOG_INFO("Install internet stack.");
+  	NS_LOG_INFO("Install internet stack.");
 	InternetStackHelper internet;
 	internet.Install(nodes);
 
@@ -94,17 +122,17 @@ main(int argc, char *argv[])
 	ipv4.Assign (devicesBC);
 	ipv4.SetBase ("10.1.3.0", "255.255.255.0");
 	Ipv4InterfaceContainer sinkinterfaces = ipv4.Assign (devicesCD);
-  ipv4.SetBase ("10.1.4.0", "255.255.255.0");
+  	ipv4.SetBase ("10.1.4.0", "255.255.255.0");
 	ipv4.Assign (devicesAE);
-  ipv4.SetBase ("10.1.5.0", "255.255.255.0");
+  	ipv4.SetBase ("10.1.5.0", "255.255.255.0");
 	ipv4.Assign (devicesEF);
-  ipv4.SetBase ("10.1.6.0", "255.255.255.0");
+  	ipv4.SetBase ("10.1.6.0", "255.255.255.0");
 	ipv4.Assign (devicesFG);
-  ipv4.SetBase ("10.1.7.0", "255.255.255.0");
+  	ipv4.SetBase ("10.1.7.0", "255.255.255.0");
 	ipv4.Assign (devicesGD);
   
-  // Set up inter-network routing
-  Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
+  	// Set up inter-network routing
+  	Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
 	NS_LOG_INFO("Create Applications.");
 
@@ -131,28 +159,28 @@ main(int argc, char *argv[])
 	sinkApps.Start(Seconds(0.0));
 	sinkApps.Stop(Seconds(10.0));
 
-  NS_LOG_INFO("Link Breakage.");
+  	NS_LOG_INFO("Link Breakage.");
   
-  //Bring down the B-C link a t=2 seconds
-  Ptr<Node> nb = nodes.Get (1);
-  Ptr<Ipv4> ipv4b = nb->GetObject<Ipv4> ();
-  // The first ifIndex is 0 for loopback, then the first p2p is numbered 1, then the next p2p is numbered 2
-  uint32_t ipv4ifIndexb = 2; 
-  Simulator::Schedule (Seconds (2), &Ipv4::SetDown, ipv4b, ipv4ifIndexb);
+  	//Bring down the B-C link a t=2 seconds
+  	Ptr<Node> nb = nodes.Get (1);
+  	Ptr<Ipv4> ipv4b = nb->GetObject<Ipv4> ();
+  	// The first ifIndex is 0 for loopback, then the first p2p is numbered 1, then the next p2p is numbered 2
+  	uint32_t ipv4ifIndexb = 2; 
+  	Simulator::Schedule (Seconds (2), &Ipv4::SetDown, ipv4b, ipv4ifIndexb);
 
-  NS_LOG("Tracing Configuration.");
+  	NS_LOG("Tracing Configuration.");
   
-  // Set up tracing
+  	// Set up tracing
 	AsciiTraceHelper ascii;
-  Ptr<OutputStreamWrapper> stream = ascii.CreateFileStream ("proj2-part3.tr");
+  	Ptr<OutputStreamWrapper> stream = ascii.CreateFileStream ("proj2-part3.tr");
 	pointToPoint.EnableAsciiAll (stream);
 	pointToPoint.EnablePcapAll ("proj2-part3", false);
-  internet.EnableAsciiIpv4All (stream);
+  	internet.EnableAsciiIpv4All (stream);
   
-  // Trace routing tables 
-  Ipv4GlobalRoutingHelper g;
-  Ptr<OutputStreamWrapper> routingStream = Create<OutputStreamWrapper> ("proj2-part3.routes", std::ios::out);
-  g.PrintRoutingTableAllAt (Seconds (10), routingStream);
+  	// Trace routing tables 
+  	Ipv4GlobalRoutingHelper g;
+  	Ptr<OutputStreamWrapper> routingStream = Create<OutputStreamWrapper> ("proj2-part3.routes", std::ios::out);
+  	g.PrintRoutingTableAllAt (Seconds (10), routingStream);
  	
 	//
 	// Now, do the actual simulation.
