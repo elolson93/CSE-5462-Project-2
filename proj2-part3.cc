@@ -50,7 +50,7 @@ TraceRecvd ()
   	// Trace the received pakets in node D
   	AsciiTraceHelper ascii;
   	Ptr<OutputStreamWrapper> stream = ascii.CreateFileStream ("proj2-part3.dat");
-  	Config::ConnectWithoutContext ("/NodeList/0/$ns3::TcpL4Protocol/SocketList/0/HighestRxSequence", MakeBoundCallback (&RecvdChange,stream));
+  	Config::ConnectWithoutContext ("/NodeList/3/$ns3::TcpL4Protocol/SocketList/0/NextTxSequence", MakeBoundCallback (&RecvdChange,stream));
 }
 
 int
