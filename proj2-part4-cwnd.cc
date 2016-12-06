@@ -48,13 +48,13 @@ NS_LOG_COMPONENT_DEFINE("TcpBulkSendExample");
 static void 
 CwndChange (Ptr<OutputStreamWrapper> stream, uint32_t oldCwnd, uint32_t newCwnd)
 {
-	if (newCwnd < ssthresh) {
+	//if (newCwnd < ssthresh) {
 		// in slow start, prints in first column which will be for slow start values
-		*stream->GetStream () << Simulator::Now ().GetSeconds () << " " << newCwnd << " NaN" << std::endl;
-	} else {
+		*stream->GetStream () << Simulator::Now ().GetSeconds () << " " << newCwnd << /*" NaN" <<*/ std::endl;
+	//} else {
 		// Not in slow start, prints in second colums which is for normal values
-		*stream->GetStream () << Simulator::Now ().GetSeconds () << " NaN " << newCwnd << std::endl;
-	}
+	//	*stream->GetStream () << Simulator::Now ().GetSeconds () << " NaN " << newCwnd << std::endl;
+	//}
 }
 
 // sshthresh callback
