@@ -1,5 +1,5 @@
- #ifndef TCP_NEWRENO_H
- #define TCP_NEWRENO_H
+ #ifndef TCP_FIXED_H
+ #define TCP_FIXED_H
   
  #include "tcp-socket-base.h"
  
