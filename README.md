@@ -9,6 +9,8 @@ Due December 6, 2016
 ##Part One: Plotting Transmitted Sequence Number
 
 ####Description
+This section of the project required us to trace the transmitted sequence numbers of packets from node A to node D. Our nodes used the
+TcpNewReno class. We then plotted our data, displaying the packet retransmissions in a different color.
 
 ####Compiling
 
