@@ -69,7 +69,7 @@ TraceSeq ()
 {
   // Trace changes to the congestion window
   AsciiTraceHelper ascii;
-  Ptr<OutputStreamWrapper> stream = ascii.CreateFileStream ("proj2-part4-seq.dat");
+  Ptr<OutputStreamWrapper> stream = ascii.CreateFileStream ("proj2-part4-seq-reno.dat");
   Config::ConnectWithoutContext ("/NodeList/0/$ns3::TcpL4Protocol/SocketList/0/NextTxSequence", MakeBoundCallback (&SeqChange,stream));
 }
 
