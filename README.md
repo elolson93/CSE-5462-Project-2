@@ -13,14 +13,20 @@ This section of the project required us to trace the transmitted sequence number
 TcpNewReno class. We then plotted our data, displaying the packet retransmissions in a different color.
 
 ####Compiling
+In order to compile this part of the project, first make sure that the file `proj2-part1.cc` is in the `ns/scratch` directory.
+Then, at the top level directory, run the command `./waf`.
 
 ####Testing
 
 ##Part Two: Plotting the Congestion Window
 
 ####Description
+This section of the project required us to trace the congestion window in node A. Our nodes used the TcpNewReno socket type. We then 
+plotted our data, showing the points that correspond to slow start in a different color.
 
 ####Compiling
+In order to compile this part of the project, first make sure that the file `proj2-part2.cc` is in the `ns/scratch` directory.
+Then, at the top level directory, run the command `./waf`.
 
 ####Testing
 
@@ -41,7 +47,8 @@ To run and test the third part of the project, after first compiling, type the c
 directory. Several files will be produced including .pcap, .dat, .tr and .route files. The .route and .pcap files can be analyzed to
 see that the routing tables are being adjusted after the B-C link goes down. 
 
-To see the gnuplot diagram of the sequence numbers received at node D, 
+To see the gnuplot diagram of the sequence numbers received at node D, make sure the `proj2-part3-script` file is in the top level
+directory and, from the top level directory, type `gnuplot proj2-part3-script` after completing the *Compiling* step above.
 
 ##Part Four: Extending ns-3
 
@@ -65,4 +72,6 @@ level directory and type the following commands one after the other: `./waf --ru
  `./waf --run proj2-part4-seq` and `./waf --run proj2-part4-seq-reno`. These commands will have produced the necessary output files needed
  to plot the data.
  
- To see the gnuplot diagrams, 
+ To see the gnuplot diagrams, after completing the *Compiling* step above, make sure the `proj2-part4-cwnd-script` and 
+ `proj2-part4-seq-script` files are in the top level directory and, from the top level directory, type 
+ `gnuplot proj2-part4-cwnd-script` followed by `gnuplot proj2-part4-seq-script`. The png files will then be present.
