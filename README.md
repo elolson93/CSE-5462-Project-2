@@ -8,7 +8,19 @@ Due December 6, 2016
 
 ##Part One: Plotting Transmitted Sequence Number
 
+####Description
+
+####Compiling
+
+####Testing
+
 ##Part Two: Plotting the Congestion Window
+
+####Description
+
+####Compiling
+
+####Testing
 
 ##Part Three: Creating an Alternate Path
 
@@ -22,7 +34,7 @@ A-E-F-G-D route. We trace and plot the sequence numbers of the packets received 
 In order to compile the third part of the project, first ensure that the file 'proj2-part3.cc' is located in the 'ns/scratch' directory.
 Then, at the top level directory, run the command './waf'.
 
-#####Testing
+####Testing
 To run and test the third part of the project, after first compiling, type the command'./waf --run proj2-part3' from the top level 
 directory. Several files will be produced including .pcap, .dat, .tr and .route files. The .route and .pcap files can be analyzed to
 see that the routing tables are being adjusted after the B-C link goes down. 
@@ -30,10 +42,20 @@ see that the routing tables are being adjusted after the B-C link goes down.
 To see the gnuplot diagram of the sequence numbers received at node D, 
 
 ##Part Four: Extending ns-3
+
 ####Description
+For this section of the project, we have extended ns-3 to include a custom made class called TcpFixed based off of the TcpNewReno class.
+Our new class, TcpFixed, behaves much the same as TcpNewReno except that it's congestion window has been hardcoded to always be
+the size 100 * (1MSS) where 1MSS is equal to 536 bytes. We then trace, plot and compare both the congestion window and the transmitted
+packet sequence number using both TcpFixed and TcpNewReno.
 
 ####Compiling
-In order to compile the fourth part of the project, first ensure that the files 'proj2-part4.cc' is located in the 'ns/scratch' directory.
-Then, at the top level directory, run the command './waf'.
+In order to compile the fourth part of the project, first make sure that the files 'tcp-fixed.cc' and 'tcp-fixed.h' are located in the
+'ns/src/internet/model' directory. Both 'tcp-fixed.cc' and 'tcp-fixed.h' must also be added to their respective lists based on file type
+in the file 'ns/src/internet/wscript'. In order to test that the above actions were completed successfully, at the top level directory
+type the command './test.py'. Next, ensure that the files 'proj2-part4-cwnd.cc', 'proj2-part4-cwnd-reno.cc',
+'proj2-part4-seq.cc' and 'proj2-part4-seq-reno.cc' are all located in the 'ns/scratch' directory. Then, at the top level directory,
+run the command './waf'.
 
 ####Testing
+
