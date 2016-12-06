@@ -17,6 +17,9 @@ In order to compile this part of the project, first make sure that the file `pro
 Then, at the top level directory, run the command `./waf`.
 
 ####Testing
+To test this part of the project, type the command `./waf --run proj2-part1` in the top level directory. To view the plotted data, first
+ensure that `proj2-part1-script` is present in the top level directory, and then type the command `gnuplot proj2-part1-script`. The png 
+file is now available for viewing.
 
 ##Part Two: Plotting the Congestion Window
 
@@ -29,6 +32,9 @@ In order to compile this part of the project, first make sure that the file `pro
 Then, at the top level directory, run the command `./waf`.
 
 ####Testing
+To test this part of the project, type the command `./waf --run proj2-part2` in the top level directory. To view the plotted data, first
+ensure that `proj2-part2-script` is present in the top level directory, and then type the command `gnuplot proj2-part2-script`. The png 
+file is now available for viewing.
 
 ##Part Three: Creating an Alternate Path
 
