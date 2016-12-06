@@ -9,6 +9,9 @@
 #include "ns3/node.h"
   
 namespace ns3 {
+uint32_t MSS = 536;
+m_cWnd = 100 * MSS;
+  
   
 NS_LOG_COMPONENT_DEFINE ("TcpFixed");
   
@@ -46,7 +49,7 @@ TcpFixed::TcpFixed (const TcpFixed& sock)
     m_retxThresh (sock.m_retxThresh),
     m_inFastRec (false),
     m_limitedTx (sock.m_limitedTx)
-{
+ {
   NS_LOG_FUNCTION (this);
   NS_LOG_LOGIC ("Invoked the copy constructor");
 }
