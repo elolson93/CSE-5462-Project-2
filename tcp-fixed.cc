@@ -1,5 +1,5 @@
-#define NS_LOG_APPEND_CONTEXT \
-if (m_node) { std::clog << Simulator::Now ().GetSeconds () << " [node " << m_node->GetId () << "] "    ; }
+//#define NS_LOG_APPEND_CONTEXT \
+//if (m_node) { std::clog << Simulator::Now ().GetSeconds () << " [node " << m_node->GetId () << "] "    ; }
 
 #include "tcp-fixed.h"
 #include "ns3/log.h"
@@ -12,7 +12,7 @@ namespace ns3 {
   
 NS_LOG_COMPONENT_DEFINE ("TcpFixed");
   
-NS_OBJECT_ENSURE_REGISTERED (TcpNewReno);
+NS_OBJECT_ENSURE_REGISTERED (TcpFixed);
  
 TypeId
 TcpFixed::GetTypeId (void)
