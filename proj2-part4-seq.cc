@@ -50,18 +50,18 @@ static void
 SeqChange (Ptr<OutputStreamWrapper> stream, ns3::SequenceNumber< uint32_t, int32_t > oldSeq, ns3::SequenceNumber< uint32_t, int32_t > newSeq) 
 {
   // add new seq num to list
-  seqNums.push_front(oldSeq.GetValue());
+  //seqNums.push_front(oldSeq.GetValue());
   
   // returns true if new seq num is in list (i.e. sequence number has been retransmitted
-  bool found = (std::find(seqNums.begin(), seqNums.end(), newSeq.GetValue()) != seqNums.end());
+  //bool found = (std::find(seqNums.begin(), seqNums.end(), newSeq.GetValue()) != seqNums.end());
   
-  if (found) {
+  //if (found) {
 	// if retransmitted, print seq number in third column so gnuplot will print it a different color
-	*stream->GetStream () << Simulator::Now ().GetSeconds () /*<< " " << oldSeq*/ << " " << newSeq << " " << newSeq << std::endl;
-  } else {
+	*stream->GetStream () << Simulator::Now ().GetSeconds () /*<< " " << oldSeq*/ << " " << newSeq << /*" " << newSeq <<*/ std::endl;
+  //} else {
 	// if not retransmitted print NaN in third column so gnuplot will ignore it
-  	*stream->GetStream () << Simulator::Now ().GetSeconds () /*<< " " << oldSeq*/ << " " << newSeq << " NaN" << std::endl;
-  }
+  //	*stream->GetStream () << Simulator::Now ().GetSeconds () /*<< " " << oldSeq*/ << " " << newSeq << " NaN" << std::endl;
+  //}
 }
 
 static void
