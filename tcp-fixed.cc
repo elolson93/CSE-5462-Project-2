@@ -1,5 +1,3 @@
-//#define NS_LOG_APPEND_CONTEXT \
-//if (m_node) { std::clog << Simulator::Now ().GetSeconds () << " [node " << m_node->GetId () << "] "    ; }
 
 #include "tcp-fixed.h"
 #include "ns3/log.h"
@@ -9,10 +7,8 @@
 #include "ns3/node.h"
   
 namespace ns3 {
-uint32_t MSS = 536;
-m_cWnd = 100 * MSS;
-  
-  
+uint32_t MSS = 536;  
+
 NS_LOG_COMPONENT_DEFINE ("TcpFixed");
   
 NS_OBJECT_ENSURE_REGISTERED (TcpFixed);
@@ -66,8 +62,9 @@ TcpFixed::Fork (void)
   
 /* New ACK (up to seqnum seq) received. Increase cwnd and call TcpSocketBase::NewAck() */
 void
-TcpNewReno::NewAck (const SequenceNumber32& seq)
+TcpFixed::NewAck (const SequenceNumber32& seq)
 {
+  m_cWnd = 100 * MSS;
   NS_LOG_FUNCTION (this << seq);
   NS_LOG_LOGIC ("TcpNewReno received ACK for seq " << seq <<
                 " cwnd " << m_cWnd <<
@@ -107,8 +104,9 @@ TcpNewReno::NewAck (const SequenceNumber32& seq)
   
 /* Cut cwnd and enter fast recovery mode upon triple dupack */
 void
-TcpNewReno::DupAck (const TcpHeader& t, uint32_t count)
+TcpFixed::DupAck (const TcpHeader& t, uint32_t count)
 {
+  m_cWnd = 100 * MSS;
   NS_LOG_FUNCTION (this << count);
   if (count == m_retxThresh && !m_inFastRec)
     { // triple duplicate ack triggers fast retransmit (RFC2582 sec.3 bullet #1)
@@ -136,8 +134,9 @@ TcpNewReno::DupAck (const TcpHeader& t, uint32_t count)
  
 /* Retransmit timeout */
 void
-TcpNewReno::Retransmit (void)
+TcpFixed::Retransmit (void)
 {
+  m_cWnd = 100 * MSS;
   NS_LOG_FUNCTION (this);
   NS_LOG_LOGIC (this << " ReTxTimeout Expired at time " << Simulator::Now ().GetSeconds ());
   m_inFastRec = false;
